@@ -1,35 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { ArrowsLeftRightIcon } from "@phosphor-icons/react";
+import { CurrencySelect } from "./components/currencySelet";
+import { Graphic } from "./components/graphic";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="flex flex-col items-center justify-center w-200 py-16 px-20 rounded-2xl shadow-2xl shadow-text-primay/15 gap-10">
+        <div className="flex flex-col gap-6">
+          <h3 className="text-xl text-text-primary font-semibold">
+            Conversor de Moedas
+          </h3>
+          <div className="flex items-center gap-4">
+            <div className="flex bg-surface-primary rounded-lg border border-graphic focus-within:outline-highlight focus-within:outline-2">
+              <input
+                type="text"
+                placeholder="$0.00"
+                className="text-lg flex-1 p-1.5 outline-none"
+              />
+              <CurrencySelect />
+            </div>
+            <ArrowsLeftRightIcon size={24} />
+            <div className="flex bg-surface-primary rounded-lg border border-graphic focus-within:outline-highlight focus-within:outline-2">
+              <input
+                type="text"
+                placeholder="$0.00"
+                className="text-lg flex-1 p-1.5 outline-none"
+              />
+              <CurrencySelect />
+            </div>
+          </div>
+        </div>
+        <div className="border">
+          <h3 className="text-xl font-semibold">Taxa de Câmbio</h3>
+          <Graphic/>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

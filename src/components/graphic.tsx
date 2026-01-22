@@ -1,18 +1,4 @@
-// export function Graphic() {
-
-//     const config = {
-//         type: 'line',
-//         data: {
-//             datasets: [{
-//                 data:[]
-//             }]
-//         },
-//        options: {},
-//        plugins:{}
-//     }
-
-//     return <div>Graphic Component</div>;
-// }
+import { useEffect, useRef, useState } from "react";
 import { GaphicHook } from "@/hook";
 import type { ApiResponse } from "@/hook/types";
 import {
@@ -35,29 +21,35 @@ ChartJS.register(
   Filler,
 );
 
-
-
 export function CurrencyChart({ apiData }: { apiData: ApiResponse }) {
-  
   const { labels, value } = GaphicHook(apiData);
+
+  const chartRef = useRef<any>(null);
+  const [gradient, setGradient] = useState<any>(null);
+
+  useEffect(() => {
+    const chart = chartRef.current;
+    if (!chart) return;
+
+    const ctx = chart.ctx;
+    const grad = ctx.createLinearGradient(0, 0, 0, 220);
+    grad.addColorStop(0, "rgba(124,58,237,0.35)");
+    grad.addColorStop(1, "rgba(124,58,237,0)");
+    setGradient(grad);
+  }, []);
+
   const data = {
-    labels,
+    labels: labels ?? [],
     datasets: [
       {
-        data: value,
+        data: value ?? [],
         borderColor: "#7C3AED",
         borderWidth: 2,
         tension: 0.4,
         pointRadius: 0,
         pointHoverRadius: 5,
         fill: true,
-        backgroundColor: (context: any) => {
-          const ctx = context.chart.ctx;
-          const gradient = ctx.createLinearGradient(0, 0, 0, 220);
-          gradient.addColorStop(0, "rgba(124,58,237,0.35)");
-          gradient.addColorStop(1, "rgba(124,58,237,0)");
-          return gradient;
-        },
+        backgroundColor: gradient,
       },
     ],
   };
@@ -78,9 +70,7 @@ export function CurrencyChart({ apiData }: { apiData: ApiResponse }) {
       },
     },
     scales: {
-      x: {
-        grid: { display: false },
-      },
+      x: { grid: { display: false } },
       y: {
         ticks: {
           callback: (value: number) => value.toFixed(2).replace(".", ","),
@@ -90,8 +80,8 @@ export function CurrencyChart({ apiData }: { apiData: ApiResponse }) {
   };
 
   return (
-    <div className="h-101.5 w-full pt-5">
-      <Line data={data} options={options} />
+    <div className="h-90 w-full pt-5">
+      <Line ref={chartRef} data={data} options={options} />
     </div>
   );
 }

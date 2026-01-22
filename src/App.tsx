@@ -20,20 +20,21 @@ function App() {
   } = ConvertCurrencies();
 
   return (
-    <>
-      <div className="flex flex-col items-center justify-center w-full py-16 px-20 rounded-2xl shadow-2xl shadow-text-primay/15 gap-10">
-        <div className="flex flex-col gap-6">
+    <div className="w-full flex items-center justify-center py-10 px-4">
+      <div className="w-full max-w-4xl flex flex-col items-center justify-center rounded-2xl shadow-2xl shadow-text-primay/15 gap-10 p-6 sm:p-10">
+        <div className="flex flex-col gap-6 w-full">
           <h3 className="text-xl text-text-primary font-semibold">
             Conversor de Moedas
           </h3>
-          <div className="flex items-center gap-4">
-            <div className="flex bg-surface-primary rounded-lg border border-graphic focus-within:outline-highlight focus-within:outline-2">
+
+          {/* RESPONSIVE */}
+          <div className="flex flex-col md:flex-row items-center gap-4 w-full">
+            <div className="flex w-full md:w-1/2 bg-surface-primary rounded-lg border border-graphic focus-within:outline-highlight focus-within:outline-2">
               <input
                 type="text"
                 value={formatCurrencySpacing(input1)}
                 onChange={(e) => {
                   const raw = e.target.value.replace(/\s/g, "");
-
                   setLastChanged("input1");
                   setInput1(raw);
                 }}
@@ -46,8 +47,10 @@ function App() {
                 currencies={currencies}
               />
             </div>
-            <ArrowsLeftRightIcon size={24} />
-            <div className="flex bg-surface-primary rounded-lg border border-graphic focus-within:outline-highlight focus-within:outline-2">
+
+            <ArrowsLeftRightIcon className="md:block" size={24} />
+
+            <div className="flex w-full md:w-1/2 bg-surface-primary rounded-lg border border-graphic focus-within:outline-highlight focus-within:outline-2">
               <input
                 type="text"
                 value={formatCurrencySpacing(input2)}
@@ -66,12 +69,13 @@ function App() {
             </div>
           </div>
         </div>
-        <div className="w-full flex-col">
+
+        <div className="w-full flex flex-col">
           <h3 className="text-xl font-semibold">Taxa de Câmbio</h3>
           {currencyData && <CurrencyChart apiData={currencyData} />}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

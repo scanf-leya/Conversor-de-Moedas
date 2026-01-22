@@ -13,6 +13,8 @@
 
 //     return <div>Graphic Component</div>;
 // }
+import { GaphicHook } from "@/hook";
+import type { ApiResponse } from "@/hook/types";
 import {
   Chart as ChartJS,
   LineElement,
@@ -33,33 +35,11 @@ ChartJS.register(
   Filler,
 );
 
-export type Rates = Record<string, number>;
 
-export type ApiResponse = {
-  start: string;
-  end: string;
-  interval: string;
-  base: string;
-  results: Record<string, Rates>;
-  ms: number;
-};
 
 export function CurrencyChart({ apiData }: { apiData: ApiResponse }) {
-  const currency = Object.keys(apiData.results)[0];
-  const parsedData = Object.entries(apiData.results[currency]).map(
-    ([date, value]) => ({
-      labels: date,
-      value,
-    }),
-  );
-  const { labels, value } = parsedData.reduce(
-    (acc, curr) => {
-      acc.labels.push(curr.labels);
-      acc.value.push(curr.value);
-      return acc;
-    },
-    { labels: [] as string[], value: [] as number[] },
-  );
+  
+  const { labels, value } = GaphicHook(apiData);
   const data = {
     labels,
     datasets: [

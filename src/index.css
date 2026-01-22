@@ -51,6 +51,19 @@ body {
   color: var(--foreground);
 }
 
+.scrollbar{
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
+.scrollbar::-webkit-scrollbar{
+  width: 8px;
+}
+.scrollbar::-webkit-scrollbar-thumb{
+  border-radius: 8px;
+  background-color: var(--surface-secondary);
+}
+
 /* ===== Reset base ===== */
 @layer base {
 

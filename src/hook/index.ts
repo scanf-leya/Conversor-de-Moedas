@@ -1,20 +1,18 @@
 import { useEffect, useState } from "react";
-import type { ApiResponse, Convert } from "./types";
+import type { currencyDataProps, currenciesProps } from "./types";
 
-const apiKey = import.meta.env.VITE_FASTFOREX_API_KEY;
+const api = import.meta.env.VITE_API_CONVERT;
 
 function ConvertCurrencies() {
   const [input1, setInput1] = useState("");
   const [input2, setInput2] = useState("");
   const [selected1, setSelected1] = useState("USD");
   const [selected2, setSelected2] = useState("AOA");
-  const [currencyData, setCurrencyData] = useState<ApiResponse | null>(null);
+  const [currencyData, setCurrencyData] = useState<currencyDataProps | null>(
+    null
+  );
   const [lastChanged, setLastChanged] = useState<"input1" | "input2">("input1");
-  const [currencies, setCurrencies] = useState<
-    { name: string; code: string }[]
-  >([]);
-
-  // teste
+  const [currencies, setCurrencies] = useState<currenciesProps>([]);
 
   const select1 = (e: string) => {
     setSelected1(e);
@@ -23,34 +21,26 @@ function ConvertCurrencies() {
     setSelected2(e);
   };
 
-  function formatCurrencySpacing(value: string): string {
-    const number = Number(value.replace(/\s/g, ""));
+ function formatCurrencySpacing(value: string): string {
+  //  const number = Number(value.replace(/\s/g, ""));
 
-    if (isNaN(number)) return "";
+  //  if (isNaN(number)) return "";
 
-    return new Intl.NumberFormat("fr-FR", {
-      useGrouping: true,
-      maximumFractionDigits: 0,
-    }).format(number);
-  }
+  //  return new Intl.NumberFormat("fr-FR", {
+  //    useGrouping: true, // separa milhares com espaço
+  //    minimumFractionDigits: 2, // sempre 2 casas decimais
+  //    maximumFractionDigits: 2, // limita a 2 casas decimais
+   //  }).format(number);
+   return value
+ }
 
   useEffect(() => {
     async function getCurrencyTimeSeries(form: string, to: string) {
-      const response = await fetch(
-        `https://api.fastforex.io/time-series?from=${form}&to=${to}&interval=P1D`,
-        {
-          headers: {
-            "X-API-Key": apiKey,
-          },
-        },
-      );
-
+      const response = await fetch(`${api}/taxes?from=${form}&to=${to}`);
       if (!response.ok) {
         throw new Error("Erro na requisição");
       }
-
-      const data: ApiResponse = await response.json();
-
+      const data = await response.json();
       return data;
     }
 
@@ -60,30 +50,10 @@ function ConvertCurrencies() {
   }, [selected1, selected2]);
 
   useEffect(() => {
-    async function getCurrency() {
-      const response = await fetch(`https://api.fastforex.io/currencies`, {
-        headers: {
-          "X-API-Key": apiKey,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Erro na requisição");
-      }
-      const data: { currencies: Record<string, string>; ms: number } =
-        await response.json();
-
-      return data;
-    }
-
     async function handleCreateListCurrency() {
-      const data = await getCurrency();
-      const currency = Object.entries(data.currencies).map(([code, name]) => ({
-        code,
-        name,
-      }));
-      console.log(currency);
-      return currency;
+      const response = await fetch(`${api}/`);
+      const data: currenciesProps = await response.json();
+      return data;
     }
     handleCreateListCurrency().then(setCurrencies);
   }, []);
@@ -95,23 +65,15 @@ function ConvertCurrencies() {
       amount: string,
     ) {
       const response = await fetch(
-        `https://api.fastforex.io/convert?from=${form}&to=${to}&amount=${amount}`,
-        {
-          headers: {
-            "X-API-Key": apiKey,
-          },
-        },
+        `${api}/convert?from=${form}&to=${to}&amount=${amount}`,
       );
-
       if (!response.ok) {
         throw new Error("Erro na requisição");
       }
-      const data: Convert = await response.json();
-      const converted = data.result[to].toString();
-      console.log(converted);
-      return converted;
+      const { value } = await response.json();
+      return value;
     }
-    if (!input1 && !input2) return;
+    if (input1 === "" && input2 === "") return;
 
     if (lastChanged === "input1") {
       handlerConvertCurrencies(selected1, selected2, input1)
@@ -142,23 +104,4 @@ function ConvertCurrencies() {
   };
 }
 
-function GaphicHook(apiData: ApiResponse) {
-  const currency = Object.keys(apiData.results)[0];
-  const parsedData = Object.entries(apiData.results[currency]).map(
-    ([date, value]) => ({
-      labels: date,
-      value,
-    }),
-  );
-  const { labels, value } = parsedData.reduce(
-    (acc, curr) => {
-      acc.labels.push(curr.labels);
-      acc.value.push(curr.value);
-      return acc;
-    },
-    { labels: [] as string[], value: [] as number[] },
-  );
-  return { labels, value };
-}
-
-export { GaphicHook, ConvertCurrencies };
+export { ConvertCurrencies };

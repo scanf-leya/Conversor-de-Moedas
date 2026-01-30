@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { GaphicHook } from "@/hook";
-import type { ApiResponse } from "@/hook/types";
+import type { currencyDataProps } from "@/hook/types";
 import {
   Chart as ChartJS,
   LineElement,
@@ -21,8 +20,8 @@ ChartJS.register(
   Filler,
 );
 
-export function CurrencyChart({ apiData }: { apiData: ApiResponse }) {
-  const { labels, value } = GaphicHook(apiData);
+export function CurrencyChart({ apiData }: { apiData: currencyDataProps }) {
+  const { labels, values } = apiData;
 
   const chartRef = useRef<any>(null);
   const [gradient, setGradient] = useState<any>(null);
@@ -42,7 +41,7 @@ export function CurrencyChart({ apiData }: { apiData: ApiResponse }) {
     labels: labels ?? [],
     datasets: [
       {
-        data: value ?? [],
+        data: values ?? [],
         borderColor: "#7C3AED",
         borderWidth: 2,
         tension: 0.4,

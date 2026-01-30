@@ -1,17 +1,11 @@
 export type Rates = Record<string, number>;
 
-export type ApiResponse = {
-  start: string;
-  end: string;
-  interval: string;
-  base: string;
-  results: Record<string, Rates>;
-  ms: number;
+export type currencyDataProps = {
+  labels: string[];
+  values: number[];
 };
 
-export interface Convert {
-  base: string;
-  amount: number;
-  result: Record<string, number>;
-  ms: number;
-}
+export type currenciesProps = {
+  name: string;
+  code: string;
+}[];

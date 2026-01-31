@@ -20,6 +20,11 @@ ChartJS.register(
   Filler,
 );
 
+import type { ChartOptions } from "chart.js";
+
+
+
+
 export function CurrencyChart({ apiData }: { apiData: currencyDataProps }) {
   const { labels, values } = apiData;
 
@@ -53,30 +58,43 @@ export function CurrencyChart({ apiData }: { apiData: currencyDataProps }) {
     ],
   };
 
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        backgroundColor: "#ffffff",
-        titleColor: "#0F172A",
-        bodyColor: "#0F172A",
-        displayColors: false,
-        callbacks: {
-          label: (ctx: any) => ctx.raw.toFixed(4).replace(".", ","),
-        },
-      },
-    },
-    scales: {
-      x: { grid: { display: false } },
-      y: {
-        ticks: {
-          callback: (value: number) => value.toFixed(2).replace(".", ","),
-        },
-      },
-    },
-  };
+ const options: ChartOptions<"line"> = {
+   responsive: true,
+   maintainAspectRatio: false,
+   plugins: {
+     legend: { display: false },
+     tooltip: {
+       backgroundColor: "#ffffff",
+       titleColor: "#0F172A",
+       bodyColor: "#0F172A",
+       displayColors: false,
+       callbacks: {
+         label: (ctx) => {
+           const value = ctx.raw;
+           if (typeof value === "number") {
+             return value.toFixed(4).replace(".", ",");
+           }
+           return String(value);
+         },
+       },
+     },
+   },
+   scales: {
+     x: {
+       grid: { display: false },
+     },
+     y: {
+       ticks: {
+         callback: (value) => {
+           if (typeof value === "number") {
+             return value.toFixed(2).replace(".", ",");
+           }
+           return value;
+         },
+       },
+     },
+   },
+ };
 
   return (
     <div className="h-90 w-full pt-5">

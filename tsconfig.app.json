@@ -25,6 +25,7 @@
     "noUncheckedSideEffectImports": true,
     
     "forceConsistentCasingInFileNames": true,
+    "baseUrl": "./",
     "paths": {
       "@/*": ["./src/*"]
     }
